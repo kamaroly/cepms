@@ -95,7 +95,7 @@ class Members extends MX_Controller{
 public function test($memberid=1)
 {
   
-  var_dump($this->loans->eligibleforloan($memberid,TRUE));
+  var_dump($this->loans->exists('member_id',$memberid));
 }
  /**
  * @Autor Kamaro Lambert

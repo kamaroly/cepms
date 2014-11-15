@@ -245,7 +245,12 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
   */
   public function getColumnValue($memberId,$columnName)
   {
-    
+  
+   // Did the user get loan before ?
+   if ($this->exists('member_id',$memberId)<=1) {
+     return (string) 0;
+   }
+
    return $this->db->select($columnName)
                    ->where('member_id',$memberId)
                    ->get($this->_table)
@@ -253,4 +258,11 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
                    ->$columnName;
   }
 
+
+  public function exists($field,$value)
+  {
+     return $this->db->where($field,$value)
+                     ->get($this->_table)
+                     ->num_rows();
+  }
 }

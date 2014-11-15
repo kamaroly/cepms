@@ -204,7 +204,7 @@ class Loans extends MX_Controller{
     }
 
       //check if the member is eligible for loan
-       if($this->Loans->eligibleforloan($memberid,TRUE))
+       if(!$this->Loans->eligibleforloan($memberid,TRUE))
          {
            #this loan doesn't exist
           $this->session->set_flashdata('errors','<h4>The person you are trying to give loan is not eligeable for it!</h4>');
@@ -310,7 +310,7 @@ class Loans extends MX_Controller{
      return ;
    }
 
-   
+
     $this->session->set_flashdata('errors','<h4>Unable to save loan</h4>');
  
 
