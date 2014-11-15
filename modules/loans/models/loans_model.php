@@ -193,14 +193,9 @@ $this->db->select($this->db->dbprefix('loans').'.id as loanid,
         $hasSecondLoan= (Boolean) $this->getColumnValue($memberid,'second');
 
          // if the percentage is higher than 2 then he has paid less than 50%
-        //So member is not eligeable for the loan 
-        if ($paymentPercentage>=50 && !$hasSecondLoan) {
-          return true;
-        }
-
-        return false;
-         
-
+         // 
+        return ($paymentPercentage>=50 && !$hasSecondLoan) ;
+  
   }
   
   /**

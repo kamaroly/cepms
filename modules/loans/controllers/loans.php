@@ -134,24 +134,26 @@ class Loans extends MX_Controller{
 *  @param   boolen $popup: this is to determine if we need popup to be displayed
  */
  
-    public function save($id=FALSE)
+    public function save($meberid=FALSE)
     {
 
-   //check if the user is looking for new loan form
-      if(empty($_POST) && $id===FALSE){
+
+
+      //trying to save loan without memberid , show error 404 - not found
+      if(empty($_POST) && $memberid===FALSE){
        show_404();
 
         return ;
       }
     
-      //User wants to update a loan
+      //trying to show the loan of the user
       if(empty($_POST) && $id!=FALSE)
       {
 
-     
+        //does the member exists?
         if(!$this->members->exists($id))
         {
-          #this loan doesn't exist
+         
           $this->session->set_flashdata('errors','<h4>The person you are trying to give loan does not exist!</h4>');
           redirect('loans','refresh');
         }
@@ -163,7 +165,7 @@ class Loans extends MX_Controller{
         return ;
       }
 
-    //check if there is some submitted data with post method
+    //did the user post some data with the member id
    if (!empty($_POST) && $id!=FALSE) {
     
     //Loading the validation library
@@ -173,9 +175,7 @@ class Loans extends MX_Controller{
          $this->form_validation->set_rules($this->rules);
 
          if ($this->form_validation->run() == FALSE){
-         var_dump(validation_errors());
-         exit;
-
+    
              $this->session->set_flashdata('errors',validation_errors());
 
              redirect($this->uri->uri_string());
@@ -184,7 +184,8 @@ class Loans extends MX_Controller{
     
     //get member details 
     $member = $this->members->get($id); 
-   //Get Maximum allowed top up 
+  
+    //Get Maximum allowed top up 
     $maxtopup=($this->config->item(str_replace(' ', '_', $member->level.'_topup'))*12)-(($this->config->item(str_replace(' ', '_', $member->level.'_topup'))*12)*0.18);
 
     //Get Oustanding amount
@@ -203,7 +204,7 @@ class Loans extends MX_Controller{
     }
 
       //check if the member is eligible for loan
-       if($this->Loans->eligibleforloan($id,TRUE)==0)
+       if($this->Loans->eligibleforloan($id,TRUE))
          {
            #this loan doesn't exist
           $this->session->set_flashdata('errors','<h4>The person you are trying to give loan is not eligeable for it!</h4>');

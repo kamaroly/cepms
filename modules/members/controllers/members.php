@@ -92,10 +92,10 @@ class Members extends MX_Controller{
                
         }
 
-public function test()
+public function test($memberid=1)
 {
   
-  var_dump($this->loans->getColumnValue($this->user_id,'second'));
+  var_dump($this->loans->eligibleforloan($memberid,TRUE));
 }
  /**
  * @Autor Kamaro Lambert
