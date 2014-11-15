@@ -25,7 +25,8 @@ $this->db->select($this->db->dbprefix('loans').'.id as loanid,
                                rank,
                                approved_amount,
                                total_loan_interest,
-                               monthly_payment_fees,'
+                               monthly_payment_fees,
+                               second,' //true if the person has tasken second loan
                                .$this->db->dbprefix('loans').'.created_at'
                                )
                       ->from('loans')
@@ -188,15 +189,17 @@ $this->db->select($this->db->dbprefix('loans').'.id as loanid,
   {
         $paymentPercentage = $this->GetPaymentPercentage($memberid,$userLatestLoan);
 
+     
+        $hasSecondLoan= (Boolean) $this->getColumnValue($memberid,'second');
+
          // if the percentage is higher than 2 then he has paid less than 50%
         //So member is not eligeable for the loan 
-        if ($paymentPercentage>=50) {
-          //Member has paid  50%
-          return 1;
-        }else{
-          //Member hasn't paid 50%
-          return 0;
+        if ($paymentPercentage>=50 && !$hasSecondLoan) {
+          return true;
         }
+
+        return false;
+         
 
   }
   
@@ -237,6 +240,22 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
                   ->get($this->_table)
                   ->result()[0]
                   ->id;
+  }
+ 
+ /**
+  * @author  Kamaro Lambert
+  * @method to get the column value based on the member id
+  * @param $memberId Id of the member in the loan table 
+  * @param $columnName 
+  */
+  public function getColumnValue($memberId,$columnName)
+  {
+    
+   return $this->db->select($columnName)
+                   ->where('member_id',$memberId)
+                   ->get($this->_table)
+                   ->result()[0]
+                   ->$columnName;
   }
 
 }

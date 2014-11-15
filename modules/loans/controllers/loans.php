@@ -86,6 +86,7 @@ class Loans extends MX_Controller{
     }
 
 
+
         /*
          * Displays all of the memebers in a table
          */
@@ -116,12 +117,14 @@ class Loans extends MX_Controller{
               }
               $this->data['loans']= $this->Loans->all(20,$offset,FALSE,$field,$value);
 
+
               $this->data["links"] = $this->pagination->create_links();
 
                //Instatiate Epargne object
               $this->_render_page('Loans/index', $this->data);
                
         }
+
 
  
  /**

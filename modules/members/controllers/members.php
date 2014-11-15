@@ -92,7 +92,11 @@ class Members extends MX_Controller{
                
         }
 
-
+public function test()
+{
+  
+  var_dump($this->loans->getColumnValue($this->user_id,'second'));
+}
  /**
  * @Autor Kamaro Lambert
 *  @method to save new member
