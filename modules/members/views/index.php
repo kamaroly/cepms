@@ -96,7 +96,7 @@
 
   <td <?php echo ($member->status=='left')?'style="background:#999"':'' ?>>
 <?php if($member->status!='left'): ?>
- <a  <?php echo ($this->loans->eligibleforloan($member->id,TRUE)==0)?'class="btn btn-success"  onclick="alert(\'This member has not paid 50% of of his recent Loan.\')"':'class="btn btn-primary" href="'.site_url('loans/save/'.$member->id).'"' ; ?>>
+ <a  <?php echo ($this->loans->eligibleforloan($member->id,TRUE)==0)?'class="btn btn-success"  onclick="alert(\'This member has not paid 50% of of his recent Loan or he has another pending loan he has to finish first.\')"':'class="btn btn-primary" href="'.site_url('loans/save/'.$member->id).'"' ; ?>>
  <i class="btn-icon-only  icon-credit-card"></i> <?php echo ($this->loans->eligibleforloan($member->id,TRUE)==1)?' Give a Loan':'Loan at '.$this->loans->GetPaymentPercentage($member->id,TRUE).' %'; ?></a>
 <?php endif; ?>
 
