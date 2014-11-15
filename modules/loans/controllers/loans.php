@@ -134,7 +134,7 @@ class Loans extends MX_Controller{
 *  @param   boolen $popup: this is to determine if we need popup to be displayed
  */
  
-    public function save($meberid=FALSE)
+    public function save($memberid=FALSE)
     {
 
 
@@ -147,18 +147,18 @@ class Loans extends MX_Controller{
       }
     
       //trying to show the loan of the user
-      if(empty($_POST) && $id!=FALSE)
+      if(empty($_POST) && $memberid!=FALSE)
       {
 
         //does the member exists?
-        if(!$this->members->exists($id))
+        if(!$this->members->exists($memberid))
         {
          
           $this->session->set_flashdata('errors','<h4>The person you are trying to give loan does not exist!</h4>');
           redirect('loans','refresh');
         }
 
-        $this->data['member']     = $this->members->get($id); //get lember details
+        $this->data['member']     = $this->members->get($memberid); //get lember details
         $this->data['contractid'] = $this->Loans->getMaxid()+1; //get the id of the next loan
 
         $this->_render_page('loans/form',$this->data);
@@ -166,7 +166,7 @@ class Loans extends MX_Controller{
       }
 
     //did the user post some data with the member id
-   if (!empty($_POST) && $id!=FALSE) {
+   if (!empty($_POST) && $memberid!=FALSE) {
     
     //Loading the validation library
      $this->load->library('form_validation');
@@ -183,7 +183,7 @@ class Loans extends MX_Controller{
          }
     
     //get member details 
-    $member = $this->members->get($id); 
+    $member = $this->members->get($memberid); 
   
     //Get Maximum allowed top up 
     $maxtopup=($this->config->item(str_replace(' ', '_', $member->level.'_topup'))*12)-(($this->config->item(str_replace(' ', '_', $member->level.'_topup'))*12)*0.18);
@@ -204,7 +204,7 @@ class Loans extends MX_Controller{
     }
 
       //check if the member is eligible for loan
-       if($this->Loans->eligibleforloan($id,TRUE))
+       if($this->Loans->eligibleforloan($memberid,TRUE))
          {
            #this loan doesn't exist
           $this->session->set_flashdata('errors','<h4>The person you are trying to give loan is not eligeable for it!</h4>');
@@ -221,7 +221,10 @@ class Loans extends MX_Controller{
       return;
       }
 
-    
+
+   
+   /**
+    * @ this  was removed because they don't want the system to pay the existing loan automattically
     if ($outstanding>0) {
       //Member has some money to pay , let's pay it first
       #calculate the balance
@@ -244,7 +247,9 @@ class Loans extends MX_Controller{
          }
 
     }
+    */
 
+    //you cannot approved amount higher than wished amount
     if($this->input->post('approved_amount')<$this->input->post('wished_amount')){
       $this->session->set_flashdata('errors','<h4>You are not allowed to approve amount which is higher than wished amount.</h4>');
 
@@ -253,7 +258,8 @@ class Loans extends MX_Controller{
     }
 
 
-   # data submitted now let's check if it's for update existing loan
+
+   //data submitted now let's check if it's for update existing loan
    $insert_array=array(
                       'member_id'=>$this->input->post('member_id'),
                       'letter_date'=>$this->input->post('letter_date'),
@@ -270,7 +276,8 @@ class Loans extends MX_Controller{
                       'description'=>$this->input->post('description'),
                       'created_by'=>$this->user_id
                     );
- #New loan to record
+
+    //New loan to record
   
     $insert=$this->Loans->insert($insert_array);
     
@@ -302,9 +309,10 @@ class Loans extends MX_Controller{
      $this->load->view('reports/prints/contracts',$this->data);
      return ;
    }
-   else{
+
+   
     $this->session->set_flashdata('errors','<h4>Unable to save loan</h4>');
-   }
+ 
 
    redirect('loans','refresh');
   }   
