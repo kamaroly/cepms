@@ -257,9 +257,18 @@ class Loans extends MX_Controller{
       return;
     }
 
+   
+   //Does he/she have an active loan
+   $secondLoan = 0;
 
-
-   //data submitted now let's check if it's for update existing loan
+   if ($this->loans->GetOustandingPayment($this->user_id,TRUE)) {
+     
+     //tell the system that this is the second loan
+     
+     $secondLoan = 1;
+   }
+   //prepare the data for the new loan
+   
    $insert_array=array(
                       'member_id'=>$this->input->post('member_id'),
                       'letter_date'=>$this->input->post('letter_date'),
@@ -273,6 +282,7 @@ class Loans extends MX_Controller{
                       'monthly_payment_fees'=>str_replace(',','', $this->input->post('monthly_payment_fees')),
                       'cheque_number'=>$this->input->post('cheque_number'),
                       'bank'=>$this->input->post('bank'),
+                      'second' =>$secondLoan,
                       'description'=>$this->input->post('description'),
                       'created_by'=>$this->user_id
                     );
@@ -301,6 +311,7 @@ class Loans extends MX_Controller{
                       'cheque_number'=>$this->input->post('cheque_number'),
                       'recievable_amount'=>$this->input->post('cheque_number'),
                       'bank'=>$this->input->post('bank'),
+                      'second' =>$secondLoan,
                       'description'=>$this->input->post('description'),
                       'created_by'=>$this->user_id
                     );
