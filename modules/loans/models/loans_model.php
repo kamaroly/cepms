@@ -43,7 +43,7 @@ $this->db->select($this->db->dbprefix('loans').'.id as loanid,
   }
   
   $this->db->limit($limit,$offset);
-  
+
 
   return $this->db->get()->result();
  }
@@ -258,11 +258,60 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
                    ->$columnName;
   }
 
-
+  /**
+   * @brief exists
+   * @details check if the row exists based on the 
+   * searched field
+   * @return integer
+   */
   public function exists($field,$value)
   {
      return $this->db->where($field,$value)
                      ->get($this->_table)
                      ->num_rows();
+  }
+
+  /**
+   * set loan to transfered
+   */
+  public function setTransfered($loanid){
+
+    //Update loan in the database
+    return $this->db->update($this->_table, 
+                            array('transfered'=>TRUE), 
+                            array('id' => $loanid)
+                            );
+    
+  }
+
+  /**
+   * unset loan to non transfered
+   */
+  public function unSetTransfered($loanid){
+    
+    //Change loan to non transfered
+    return $this->db->update($this->_table, 
+                            array('transfered'=>FALSE), 
+                            array('id' => $loanid)
+                            );
+  }
+ 
+  /**
+   * get member previous loan id
+   * @return integer loan id.
+   */
+
+  public function getPreviousLoanId($memberid=FALSE)
+  {
+    if(!$memberid){
+      return false;
+    }
+
+    return $this->db->order_by("id", "desc")
+                    ->select('id')
+                    ->where('member_id',$memberid)
+                    ->get($this->_table)
+                    ->result()[1]
+                    ->id;
   }
 }

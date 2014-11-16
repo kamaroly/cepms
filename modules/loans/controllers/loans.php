@@ -115,7 +115,7 @@ class Loans extends MX_Controller{
                  $value=$this->input->get('search');
 
               }
-              
+
               $this->data['loans']= $this->Loans->all(20,$offset,FALSE,$field,$value);
 
 
@@ -224,31 +224,7 @@ class Loans extends MX_Controller{
 
 
    
-   /**
-    * @ this  was removed because they don't want the system to pay the existing loan automattically
-    if ($outstanding>0) {
-      //Member has some money to pay , let's pay it first
-      #calculate the balance
-        $balance = $total_loan_interest-$loanpaymentssum;
 
-        $insert_array=array(
-                    'member_id'   =>$id,
-                    'loan_id'     =>$this->Loans->LatestLoanId($id),
-                    'date_paid'   =>date('Y-m-d'),
-                    'paid_amount' =>$outstanding, 
-                    'description' =>'Automatically Paid by the system during Loan top up',
-                    'balance'     =>$balance,
-                    'created_by'  =>$this->user_id
-                    );
-      #check if we have saved the payment very well.
-         if(!$this->loanpayments->insert($insert_array))
-         {
-            $this->session->set_flashdata('errors','<h4>Unable to pay outstanding amount, Please pay it manual then give Loan again.</h4>');
-            redirect('loans/save/'.$id);
-         }
-
-    }
-    */
 
     //you cannot approved amount higher than wished amount
     if($this->input->post('approved_amount')<$this->input->post('wished_amount')){
@@ -323,7 +299,7 @@ class Loans extends MX_Controller{
    }
 
 
-    $this->session->set_flashdata('errors','<h4>Unable to save loan</h4>');
+    $this->session->set_flashdata('errors','<h4> Unable to save loan. </h4>');
  
 
    redirect('loans','refresh');
@@ -397,6 +373,12 @@ class Loans extends MX_Controller{
       $this->data['id']=$id;
       $this->data['loan']= $this->Loans->all(1,0,$id)[0];
       $this->load->view('loans/paymentform',$this->data);
+    }
+
+
+    public function test($memberid=1)
+    {
+        var_dump($this->loans->());
     }
    /**
    * @Author Kamaro Lambert
