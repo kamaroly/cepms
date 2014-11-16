@@ -1,265 +1,101 @@
-<div id="contents">
-    <style type="text/css">
+<link rel="stylesheet" type="text/css" href="<?php echo site_url('assets/css/pages/printing.css') ?>">
+    <!-- this row will not appear when printing -->
+                    <div class="row no-print">
+                        <div class="col-xs-12">
+                            <button class="btn btn-success" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+                            </div>
+                    </div>
+<section class="content invoice">                    
+                    <!-- title row -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h2 class="page-header">
+
+                                <small class="pull-right">Date: <?php echo date('d/m/Y') ?></small>
+                                <i class="fa fa-globe"></i> AMASEZERANO Y' INGUZANYO.
+                            </h2>                            
+                        </div><!-- /.col -->
+                    </div>
+                    <!-- info row -->
+                    <div class="row invoice-info">
+                        <div class="col-sm-12 col-xs-12">
+                        <p><strong>Hagati  ya:</strong></p>
+                        <p><strong>CEP</strong>: ni  umuryango w' ubufatanye ku  bakozi  bakorera mu bitaro bikuru bya GISIRIKARE mu Rwanda (Caise d' Entraide du Personnel)
+Hagati ya (Mme)(Mlle) Mr <strong><?php echo $first_name.' '.$last_name; ?></strong>.
+Umunyamuryango  wa  CEP ufite Numero: <strong><?php echo $membership_number; ?></strong> , utuye mu karere ka Kicukro 
+Intara Kigali agiranye amasezerano n'inama ishinzwe inguzanyo ,bigashyirwaho umukono na Perezida wayo ibi bikurikira:</p>
+                       
+                       <p><strong>INGINGO YA 1.</strong></p>
+                       <p>Mme,Mlle,Mr <strong><?php echo $first_name.' '.$last_name; ?></strong>.Umunyamuryango wa CEP ahawe inguzanyo
+                       <?php echo ($second)?"y' inyongera ":"" ;?> ingana <strong><?php echo number_format(intval($approved_amount)); ?></strong> y'Amafaranga y'u Rwanda ,Cheque No <strong><?php echo $cheque_number; ?></strong>
+<?php if($second): ?>
+<p>Isanga andi mafaranga <strong><?php echo number_format(intval($outstanding)); ?></strong> Yari asigayemo  kunguzanyo ifite numero <strong><?php echo $previousloanid; ?></strong> 
+Yose hamwe akaba agiyemo CEP umwenda ungana <strong><?php echo number_format(intval($totalloan)) ?></strong></p>
+<?php endif; ?>    
+
+
+Izishyurywa mubyiciro <strong><?php echo $installment; ?></strong> amafaranga azishyurwa buri kwezi <strong><?php echo number_format(intval($monthly_payment_fees)); ?></strong>, inyungu  ya buri kwezi ingana <strong><?php echo intval($interest); ?></strong>. 
+  </p>
+ 
+
+  <p><strong>INGINGO YA 2.</strong></p>
+  <p> Ukaba uzatangira kwishyura mu kwezi kwa <strong><?php echo date("M-Y", strtotime("+1 months")); ?></strong> Kugeza mu kwezi kwa  <strong><?php echo date("M-Y", strtotime("+".$installment." months")); ?></strong>  igihe  cyose  kingana n'amezi  <strong><?php echo $installment; ?></strong>.</p>
+                       
+   <p><strong>INGINGO YA 3.</strong></p>
+   <P>CEP  ihaye nyirugurizwa,ikurikije amategeko ngenga yayo ,ayimicungire y'inguzanyo , n'amabwiriza y'igenamwenda ndetse n'aya masezerano ,inguzanyo izakatwa kuri top-up  ,Umushahara nahandi hose impande zose  zumvikanye(Prime de responsabilite ),Gardes,Transport  n'ibindi)</P>
     
-        ol {
-            margin: 0;
-            padding: 0
-        }
-        .c1 {
-            line-height: 1.0;
-            widows: 2;
-            orphans: 2;
-            direction: ltr;
-            padding-bottom: 0pt
-        }
-        .c7 {
-            max-width: 468pt;
-            background-color: #ffffff;
-            padding: 72pt 72pt 72pt 72pt
-        }
-        .c4 {
-            widows: 2;
-            orphans: 2;
-            direction: ltr
-        }
-        .c0 {
-            text-decoration: underline;
-            font-weight: bold
-        }
-        .c6 {
-            text-indent: 36pt;
-            margin-left: 144pt
-        }
-        .c5 {
-            background-color: #ffff00
-        }
-        .c2 {
-            height: 11pt
-        }
-        .c3 {
-            font-weight: bold
-        }
-        .c8 {
-            padding-bottom: 0pt
-        }
-        .title {
-            widows: 2;
-            padding-top: 24pt;
-            line-height: 1.1500000000000001;
-            orphans: 2;
-            text-align: left;
-            color: #000000;
-            font-size: 36pt;
-            font-family: "Calibri";
-            font-weight: bold;
-            padding-bottom: 6pt;
-            page-break-after: avoid
-        }
-        .subtitle {
-            widows: 2;
-            padding-top: 18pt;
-            line-height: 1.1500000000000001;
-            orphans: 2;
-            text-align: left;
-            color: #666666;
-            font-style: italic;
-            font-size: 24pt;
-            font-family: "Georgia";
-            padding-bottom: 4pt;
-            page-break-after: avoid
-        }
-        li {
-            color: #000000;
-            font-size: 11pt;
-            font-family: "Calibri"
-        }
-        p {
-            color: #000000;
-            font-size: 11pt;
-            margin: 0;
-            font-family: "Calibri"
-        }
-        h1 {
-            widows: 2;
-            padding-top: 24pt;
-            line-height: 1.1500000000000001;
-            orphans: 2;
-            text-align: left;
-            color: #000000;
-            font-size: 24pt;
-            font-family: "Calibri";
-            font-weight: bold;
-            padding-bottom: 6pt;
-            page-break-after: avoid
-        }
-        h2 {
-            widows: 2;
-            padding-top: 18pt;
-            line-height: 1.1500000000000001;
-            orphans: 2;
-            text-align: left;
-            color: #000000;
-            font-size: 18pt;
-            font-family: "Calibri";
-            font-weight: bold;
-            padding-bottom: 4pt;
-            page-break-after: avoid
-        }
-        h3 {
-            widows: 2;
-            padding-top: 14pt;
-            line-height: 1.1500000000000001;
-            orphans: 2;
-            text-align: left;
-            color: #000000;
-            font-size: 14pt;
-            font-family: "Calibri";
-            font-weight: bold;
-            padding-bottom: 4pt;
-            page-break-after: avoid
-        }
-        h4 {
-            widows: 2;
-            padding-top: 12pt;
-            line-height: 1.1500000000000001;
-            orphans: 2;
-            text-align: left;
-            color: #000000;
-            font-size: 12pt;
-            font-family: "Calibri";
-            font-weight: bold;
-            padding-bottom: 2pt;
-            page-break-after: avoid
-        }
-        h5 {
-            widows: 2;
-            padding-top: 11pt;
-            line-height: 1.1500000000000001;
-            orphans: 2;
-            text-align: left;
-            color: #000000;
-            font-size: 11pt;
-            font-family: "Calibri";
-            font-weight: bold;
-            padding-bottom: 2pt;
-            page-break-after: avoid
-        }
-        h6 {
-            widows: 2;
-            padding-top: 10pt;
-            line-height: 1.1500000000000001;
-            orphans: 2;
-            text-align: left;
-            color: #000000;
-            font-size: 10pt;
-            font-family: "Calibri";
-            font-weight: bold;
-            padding-bottom: 2pt;
-            page-break-after: avoid
-        }
-    </style>
-    <p class="c1 c6"><span class="c0">AMASEZERANO Y' INGUZANYO</span>
-    </p>
-    <p class="c1 c2 c6"><span class="c0"></span>
-    </p>
-    <p class="c1"><span class="c3">Hagati &nbsp;ya:</span>
-    </p>
-    <p class="c1"><span class="c3">CEP</span><span>&nbsp;: ni &nbsp;umuryango w'ubufatanye ku &nbsp;bakozi &nbsp;bakorera mu bitaro bikuru bya GISIRIKARE mu Rwanda (Caise d' Entraide du Personnel)</span>
-    </p>
-    <p class="c1"><span>Hagati ya (Mme)(Mlle) Mr &nbsp;......................................................................................................................</span>
-    </p>
-    <p class="c1"><span>Umunyamuryango &nbsp;wa &nbsp;CEP ufite Numero:........................................,utuye mu karere ka................................. </span>
-    </p>
-    <p class="c1"><span>Intara ................................................................................agiranye amasezerano n'inama ishinzwe inguzanyo ,bigashyirwaho umukono na Perezida wayo ibi bikurikira:</span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1"><span class="c0">INGINGO YA 1.</span>
-    </p>
-    <p class="c1"><span>Mme,Mlle,Mr .....................................................................................Umunyamuryango wa CEP ahawe inguzanyo </span><span class="c5">y' inyongera</span><span>&nbsp; ingana ................................................Amafaranga y'Rwanda ,Cheque N ............................................. </span>
-    </p>
-    <p class="c1"><span class="c5">Isanga andi mafaranga .............................................. Yari asigayemo &nbsp;kunguzanyo &nbsp;ID...................................... </span>
-    </p>
-    <p class="c1"><span class="c5">Yose hamwe akaba agiyemo CEP umwenda ungana ...........................................................................................</span>
-    </p>
-    <p class="c1"><span>Izishyurywa mubyiciro .................. &nbsp; amafaranga azishyurwa buri kwezi ..................., inyungu &nbsp;ya buri kwezi ingana .......................... &nbsp;</span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1"><span class="c0">INGINGO YA 2.</span>
-    </p>
-    <p class="c1"><span>Ukaba uzatangira kwishyura mu kwezi kwa ............................. 20.... Kugeza mu kwezi kwa &nbsp;.................. 20 ... &nbsp;igihe &nbsp;cyose &nbsp;kingana n'amezi &nbsp;............</span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1"><span class="c0">INGINGO YA 3.</span>
-    </p>
-    <p class="c1"><span>CEP &nbsp;ihaye nyirugurizwa,ikurikije amategeko ngenga yayo ,ayimicungire y'inguzanyo , n'amabwiriza y'igenamwenda ndetse n'aya masezerano ,inguzanyo izakatwa kuri top-up &nbsp;,Umushahara nahandi hose impande zose &nbsp;zumvikanye(Prime de responsabilite ),Gardes,Transport &nbsp;n'ibindi)...</span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1"><span class="c0">INGINGO YA 4.</span>
-    </p>
-    <p class="c1"><span>Nyiri Kugurizwa &nbsp;,ahaye uburenganzira umukoresha we (RMH,RDF) gukata top_up,umushahara ,prime cyangwa n'ahandi hose &nbsp;hashoboka &nbsp;kugirango yishyure umwenda &nbsp;abereyemo CEP</span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1"><span class="c0">INGINGO YA 5.</span>
-    </p>
-    <p class="c1"><span>Nyiri &nbsp;kugurizwa &nbsp;yemeye ko aramutse &nbsp;adatanze &nbsp;amafaranga igihe cyo kwishyura kigeze,CEP &nbsp;yakurikirana ubwishyu ku yindi mitungo ye aho &nbsp;yaba iri hose kugirango umutungo &nbsp;wayo ugaruzwe hiyongereho inyungu iteganyijwe ndetse nubukererwe.</span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1"><span class="c0">INGINGO YA 6.</span>
-    </p>
-    <p class="c1"><span>Nyiri kugurizwa iyo yitabye Imana afitiye umwenda CEP ,uwo bashakanye byemewe namategeko yishyura uwo &nbsp;mwenda .iyo akiri ingaragu,umwenda we &nbsp;wishyurwa n'uwo &nbsp;yaraze.</span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1"><span class="c0">INGINGO YA 7.</span>
-    </p>
-    <p class="c1"><span>Ikibazo &nbsp;cyose &nbsp;cyavuka gikemurwa n'ubuyobozi bw'ibitaro,bitashoboa &nbsp;bakitabaza inzego za RDF cyangwa izindi nzego zi gihugu &nbsp;zibifitiye ububasha.</span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1"><span class="c0">INGINGO YA 8.</span>
-    </p>
-    <p class="c1"><span>Iyo igihe cyo kwishyura kirangiye nyiri ukugurizwa atararangiza kwishyura inguzanyo ,inyungu ibarwa ku !% yinyingera ku kwezi uhereye kumunsi wa mbere wu bukererwe kandi &nbsp;zibarirwa ku mwenda wose asigaranye.</span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1"><span class="c0">INGINGO YA 9.</span>
-    </p>
-    <p class="c1"><span>Nyiri kugurizwa yemera ko amafaranga yibikira ku bushake byishingira umwenda asabye ,kandi mu kwishyura ,CEP itambutswa ku bandi nyirukugurizwa abereyemo umwenda.</span>
-    </p>
-    <p class="c1 c2"><span></span>
-    </p>
-    <p class="c1"><span class="c0">INGINGO YA 10.</span>
-    </p>
-    <p class="c1"><span>Aya masezerano agomba gutungwa n ‘impande &nbsp;zombie zigiranye amasezerano</span>
-    </p>
-    <p class="c4 c2 c8"><span></span>
-    </p>
-    <p class="c4 c2"><span></span>
-    </p>
-    <p class="c4 c2"><span></span>
-    </p>
-    <p class="c4"><span class="c0">Uhawe Inguzanyo</span><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c0">Komite Itanga inguzanyo</span>
-    </p>
-    <p class="c4"><span>Amazina:................................... &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;1.......................................................</span>
-    </p>
-    <p class="c4"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.......................................................&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;3.......................................................&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    </p>
-    <p class="c4"><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Umukono wa Perezida wa CEP</span>
-    </p>
-    <p class="c4"><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Capt &nbsp;Murindabyuma &nbsp;Jean Nepo</span>
-    </p>
-    <p class="c4 c2"><span></span>
-    </p>
-    <p class="c4 c2"><span></span>
-    </p>
-    <p class="c4"><span>. </span>
-    </p>
-</div>
+<p><strong>INGINGO YA 4.</strong></p>
+<p>Nyiri Kugurizwa  ,ahaye uburenganzira umukoresha we (RMH,RDF) gukata top_up,umushahara ,prime cyangwa n'ahandi hose  hashoboka  kugirango yishyure umwenda  abereyemo CEP
+</p>
+<p><strong>INGINGO YA 5.</strong></p>
+<p>Nyiri  kugurizwa  yemeye ko aramutse  adatanze  amafaranga igihe cyo kwishyura kigeze,CEP  yakurikirana ubwishyu ku yindi mitungo ye aho  yaba iri hose kugirango umutungo  wayo ugaruzwe hiyongereho inyungu iteganyijwe ndetse nubukererwe.
+</p>
+<p><strong>INGINGO YA 6.</strong></p>
+<p>Nyiri kugurizwa iyo yitabye Imana afitiye umwenda CEP ,uwo bashakanye byemewe namategeko yishyura uwo  mwenda .iyo akiri ingaragu,umwenda we  wishyurwa n'uwo  yaraze.
+</p>
+<p><strong>INGINGO YA 7.</strong></p>
+<p>Ikibazo  cyose  cyavuka gikemurwa n'ubuyobozi bw'ibitaro,bitashoboa  bakitabaza inzego za RDF cyangwa izindi nzego zi gihugu  zibifitiye ububasha.
+</p>
+<br>
+<p><strong>INGINGO YA 8.</strong></p>
+<p>Iyo igihe cyo kwishyura kirangiye nyiri ukugurizwa atararangiza kwishyura inguzanyo ,inyungu ibarwa ku !% yinyingera ku kwezi uhereye kumunsi wa mbere wu bukererwe kandi  zibarirwa ku mwenda wose asigaranye.
+</p>
+
+<p><strong>INGINGO YA 9.</strong></p>
+<p>Nyiri kugurizwa yemera ko amafaranga yibikira ku bushake byishingira umwenda asabye ,kandi mu kwishyura ,CEP itambutswa ku bandi nyirukugurizwa abereyemo umwenda.
+</p>
+<p><strong>INGINGO YA 10.</strong></p>
+<p>Aya masezerano agomba gutungwa n'impande  zombie zigiranye amasezerano
+</p>
+                        </div>
+
+
+                    </div><!-- /.row -->
+<div class="row invoice-info">
+                        <div class="col-sm-4 invoice-col" style="float:left;margin-right:30px;">
+                            
+                            <address>
+                                <strong><u>Uhawe Inguzanyo</u>.</strong><br>
+                                <br>
+                                Amazina:<strong><?php echo $first_name.' '.$last_name; ?></strong>.<br>
+                                <br>
+                            </address>
+                        </div><!-- /.col -->
+                        <div class="col-sm-4 invoice-col">
+                            <address>
+                                <strong><u> Komite Itanga inguzanyo</u></strong><br>
+                                
+                                .........................................<br>
+                                .........................................<br>
+                                .........................................<br>
+                            </address>
+                        </div><!-- /.col -->
+                    </div>
+
+                    <!-- this row will not appear when printing -->
+                    <div class="row no-print">
+                        <div class="col-xs-12">
+                            <button class="btn btn-success" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+                            </div>
+                    </div>
+                </section>

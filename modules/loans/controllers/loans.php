@@ -233,14 +233,16 @@ class Loans extends MX_Controller{
 
    
    //Does he/she have an active loan
-   $secondLoan = 0;
+   $secondLoan = FALSE;
    $approved_amount=$this->input->post('approved_amount');
 
    if ($this->loans->GetOustandingPayment($this->user_id,TRUE)) {
      //tell the system that this is the second loan    
-     $secondLoan = 1;
-
-     $approved_amount += $this->loans->GetOustandingPayment($this->user_id,TRUE);
+     $secondLoan = TRUE;
+     //Get outstanding
+     $outstanding=$this->loans->GetOustandingPayment($this->user_id,TRUE);
+     //add outstanding to the gotten loan
+     $approved_amount +=  $outstanding;
    }
    //prepare the data for the new loan
    
@@ -266,7 +268,7 @@ class Loans extends MX_Controller{
   
     $insert=$this->Loans->insert($insert_array);
     
-   if ($insert) {
+   if ($loanId=$insert) {
 
      //Second created let's mark the previoius loan ID
      $previousLoanId = $this->loans->getPreviousLoanId($this->input->post('member_id'));
@@ -276,8 +278,7 @@ class Loans extends MX_Controller{
 
      $this->session->set_flashdata('message', "Loan  well Given!");
      
-
-     //Prepare data to show on the contract
+    //Prepare data to show on the contract
      $this->data=array(
                       'member_id'=>$this->input->post('member_id'),
                       'first_name'=>$member->first_name,
@@ -286,28 +287,35 @@ class Loans extends MX_Controller{
                       'loan_contract_number'=>$this->input->post('loan_contract_number'),
                       'interest_rate'   =>$this->input->post('interest_rate'),
                       'wished_amount'   =>$this->input->post('wished_amount'),
-                      'approved_amount' =>$approved_amount,
+                      'approved_amount' =>$this->input->post('approved_amount'),
                       'interest'        =>$this->input->post('interest'),
                       'total_loan_interest'=>$this->input->post('total_loan_interest'),
                       'installment'=>$this->input->post('installment'),
-                      'monthly_payment_fees'=>$this->input->post('monthly_payment_fees'),
+                      'monthly_payment_fees'=>(int) $approved_amount/$this->input->post('installment'),
                       'cheque_number'=>$this->input->post('cheque_number'),
                       'recievable_amount'=>$this->input->post('cheque_number'),
+                      'outstanding' => $outstanding,
+                      'previousloanid' =>$previousLoanId,
+                      'totalloan' =>$approved_amount,
                       'bank'=>$this->input->post('bank'),
                       'second' =>$secondLoan,
                       'description'=>$this->input->post('description'),
                       'created_by'=>$this->user_id
                     );
+
      $this->data['membership_number']=$this->members->get($this->input->post('member_id'))->membership_number;
 
-     $this->load->view('reports/prints/contracts',$this->data);
+     $contract=$this->load->view('reports/prints/contracts',$this->data,TRUE);
+
+     //insert contract 
+     $this->loans->setContract($loanId,$contract);
+
+     echo $contract;
      return ;
    }
 
-
-    $this->session->set_flashdata('errors','<h4> Unable to save loan. </h4>');
+   $this->session->set_flashdata('errors','<h4> Unable to save loan. </h4>');
  
-
    redirect('loans','refresh');
   }   
  

@@ -32,7 +32,9 @@ $this->db->select($this->db->dbprefix('loans').'.id as loanid,
                                )
                       ->from('loans')
                       ->join('members', 'members.id = loans.member_id');
-   //Check if we need loan information for a specific user only 
+   
+$this->db->where('transfered',0);
+    //Check if we need loan information for a specific user only 
 
      if ($loanid!=FALSE && is_numeric($loanid)) {
      	$this->db->where($this->db->dbprefix('loans').'.id',$loanid);
@@ -297,6 +299,19 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
                             array('id' => $loanid)
                             );
   }
+
+   /**
+   * Insert contract to the loan
+   */
+  public function setContract($loanid,$contract=nll){
+    
+    //Change loan to non transfered
+    return $this->db->update($this->_table, 
+                            array('contract'=>$contract),
+                            array('id' => $loanid)
+                            );
+  }
+ 
  
   /**
    * get member previous loan id
