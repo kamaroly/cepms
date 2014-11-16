@@ -150,6 +150,11 @@ These are loan related reports
                   <strong>loans not yet paid</strong>
                 </a>
  </p>
+  <a data-toggle="modal" href="<?php echo site_url('reports/datefilter/transferedLoan') ?>" data-target="#utility" >
+                  <i class="icon-th-list"></i>
+                  <strong>TRANSFERED LOAN</strong>
+                </a>
+ </p>
   <p>
  <a data-toggle="modal" href="<?php echo site_url('reports/memberfilter/membersloans') ?>" data-target="#utility" >
                   <i class="icon-th-list"></i>

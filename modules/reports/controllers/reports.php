@@ -331,6 +331,36 @@ public function paybackplan($memberid=false)
         $this->load->view('reports/prints/tabular',$this->data);
     }
 
+public function transferedLoan($id=false)
+{
+        #if user didn't submit form then show error of page not found
+        if((!$this->input->post('start_date') || !$this->input->post('end_date') )){
+            show_404();
+            return ;
+        }
+
+        
+        #getting submited values
+        $start_date = $this->input->post('start_date').'-01';
+        $end_date   = $this->input->post('end_date').'-01';
+        
+
+    if ($this->input->post('membersids')) {
+            # use has submited the ids of the members who needs to be checked up while reports
+         $id=implode(',', $this->input->post('membersids'));
+    }
+
+        #load models
+        $this->load->model('Loansnotyetpaid_model','loansnotyetpaid');
+        
+        #getting the data
+        $this->data['loansnotyetpaid'] = $this->loansnotyetpaid->getTransferedLoan($start_date,$end_date,$id);
+
+        $this->data['body']=$this->load->view('reports/loans/transferedLoan',$this->data,TRUE);
+
+        $this->load->view('reports/prints/tabular',$this->data);
+}
+
 
    public function activestatus($status="active")
    {   
