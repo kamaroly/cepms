@@ -14,5 +14,4 @@ kuri credit akaba nayo azajya  yerekanwa kuri ino raport).
 6.Hagomba guhindurwa contract ya credit ya kabiri.
 
 7.Igihe umuntu aje gufata credit ya 2 azajya akoresha rate ya credit  yambere.
-8. umuntu  ntiyemerewe  gufata  indi credit  mugihe  yafashe  credit additionel  atabanje kwishyura  amafaranga yose  abereyemo CEP ***done
-
+8. umuntu  ntiyemerewe  gufata  indi credit  mugihe  yafashe  credit additionel  atabanje kwishyura  amafaranga yose  abereyemo CEP
