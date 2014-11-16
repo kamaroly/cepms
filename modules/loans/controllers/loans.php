@@ -360,7 +360,11 @@ class Loans extends MX_Controller{
         $total_loan_interest=$this->input->post('total_loan_interest');
         #calculate the balance
         $balance = $total_loan_interest-$loanpaymentssum;
-
+/**
+ * @todo  if it's the last payment and this loan has been transfered , you have to mark the previous loan as trasnfered
+ * * then update and close the second one.
+ */
+        
         $insert_array=array(
                     'member_id'   =>$this->input->post('member_id'),
                     'loan_id'     =>$this->input->post('loan_id'),
