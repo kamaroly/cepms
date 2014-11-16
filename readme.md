@@ -1,4 +1,4 @@
-** TO DO 
+## TO DO 
 
 1.Nugukora raport yerekana credit zarangiye(Zishyuwe).
 
@@ -16,4 +16,3 @@ kuri credit akaba nayo azajya  yerekanwa kuri ino raport).
 7.Igihe umuntu aje gufata credit ya 2 azajya akoresha rate ya credit  yambere.
 8. umuntu  ntiyemerewe  gufata  indi credit  mugihe  yafashe  credit additionel  atabanje kwishyura  amafaranga yose  abereyemo CEP ***done
 
-***9.kwishyura credit bizajya bikorerwa icyarimwe herekanwa amafaranga umuntu agomba kwishyura yose uko angana

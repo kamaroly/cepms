@@ -115,6 +115,7 @@ class Loans extends MX_Controller{
                  $value=$this->input->get('search');
 
               }
+              
               $this->data['loans']= $this->Loans->all(20,$offset,FALSE,$field,$value);
 
 

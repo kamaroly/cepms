@@ -38,14 +38,14 @@ $this->db->select($this->db->dbprefix('loans').'.id as loanid,
      }
   //if user has searched for a loan
   if ($field!=null && $value!=null) {
+
     $this->db->like($field, $value); 
   }
   
   $this->db->limit($limit,$offset);
+  
 
- $dataset=$this->db->get();
-
-  return $dataset->result();
+  return $this->db->get()->result();
  }
   
   //method to get the count of users with loans
