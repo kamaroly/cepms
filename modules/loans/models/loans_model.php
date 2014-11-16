@@ -26,7 +26,8 @@ $this->db->select($this->db->dbprefix('loans').'.id as loanid,
                                approved_amount,
                                total_loan_interest,
                                monthly_payment_fees,
-                               second,' //true if the person has tasken second loan
+                               second, 
+                               transfered,' //true if the person has tasken second loan
                                .$this->db->dbprefix('loans').'.created_at'
                                )
                       ->from('loans')
@@ -274,11 +275,12 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
   /**
    * set loan to transfered
    */
-  public function setTransfered($loanid){
+  public function setTransfered($loanid,$memberid=false){
 
     //Update loan in the database
     return $this->db->update($this->_table, 
-                            array('transfered'=>TRUE), 
+                            array('transfered'=>TRUE,
+                                'description' => 'Loan Transfered to loan ID # '.$this->getLastLoanId($memberid)), 
                             array('id' => $loanid)
                             );
     
@@ -291,7 +293,7 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
     
     //Change loan to non transfered
     return $this->db->update($this->_table, 
-                            array('transfered'=>FALSE), 
+                            array('transfered'=>FALSE),
                             array('id' => $loanid)
                             );
   }
@@ -312,6 +314,26 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
                     ->where('member_id',$memberid)
                     ->get($this->_table)
                     ->result()[1]
+                    ->id;
+  }
+
+
+    /**
+   * get latest loan ID
+   * @return integer loan id.
+   */
+
+  public function getLastLoanId($memberid=FALSE)
+  {
+    if(!$memberid){
+      return false;
+    }
+
+    return $this->db->order_by("id", "desc")
+                    ->select('id')
+                    ->where('member_id',$memberid)
+                    ->get($this->_table)
+                    ->result()[0]
                     ->id;
   }
 }

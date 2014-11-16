@@ -223,9 +223,6 @@ class Loans extends MX_Controller{
       }
 
 
-   
-
-
     //you cannot approved amount higher than wished amount
     if($this->input->post('approved_amount')<$this->input->post('wished_amount')){
       $this->session->set_flashdata('errors','<h4>You are not allowed to approve amount which is higher than wished amount.</h4>');
@@ -237,12 +234,13 @@ class Loans extends MX_Controller{
    
    //Does he/she have an active loan
    $secondLoan = 0;
+   $approved_amount=$this->input->post('approved_amount');
 
    if ($this->loans->GetOustandingPayment($this->user_id,TRUE)) {
-     
-     //tell the system that this is the second loan
-     
+     //tell the system that this is the second loan    
      $secondLoan = 1;
+
+     $approved_amount += $this->loans->GetOustandingPayment($this->user_id,TRUE);
    }
    //prepare the data for the new loan
    
@@ -252,7 +250,7 @@ class Loans extends MX_Controller{
                       'loan_contract_number'=>$this->input->post('loan_contract_number'),
                       'interest_rate'   =>$this->input->post('interest_rate'),
                       'wished_amount'   =>$this->input->post('wished_amount'),
-                      'approved_amount' =>$this->input->post('approved_amount'),
+                      'approved_amount' =>$approved_amount,
                       'interest'        =>str_replace(',','', $this->input->post('interest')),
                       'total_loan_interest'=>str_replace(',','', $this->input->post('total_loan_interest')),
                       'installment'=>$this->input->post('installment'),
@@ -270,8 +268,16 @@ class Loans extends MX_Controller{
     
    if ($insert) {
 
+     //Second created let's mark the previoius loan ID
+     $previousLoanId = $this->loans->getPreviousLoanId($this->input->post('member_id'));
+     
+     //Mark previous loan as transfered
+     $this->loans->setTransfered($previousLoanId,$this->input->post('member_id'));
+
      $this->session->set_flashdata('message', "Loan  well Given!");
      
+
+     //Prepare data to show on the contract
      $this->data=array(
                       'member_id'=>$this->input->post('member_id'),
                       'first_name'=>$member->first_name,
@@ -280,7 +286,7 @@ class Loans extends MX_Controller{
                       'loan_contract_number'=>$this->input->post('loan_contract_number'),
                       'interest_rate'   =>$this->input->post('interest_rate'),
                       'wished_amount'   =>$this->input->post('wished_amount'),
-                      'approved_amount' =>$this->input->post('approved_amount'),
+                      'approved_amount' =>$approved_amount,
                       'interest'        =>$this->input->post('interest'),
                       'total_loan_interest'=>$this->input->post('total_loan_interest'),
                       'installment'=>$this->input->post('installment'),
@@ -376,13 +382,13 @@ class Loans extends MX_Controller{
     }
 
 
-    public function test($memberid=1)
-    {
-        var_dump($this->loans->());
-    }
+   public function test()
+   {
+     $this->load->view('reports/prints/contracts');
+   }
    /**
-   * @Author Kamaro Lambert
-   * @Method to render the page to the mail template of our application
+   * @author Kamaro Lambert
+   * @method to render the page to the mail template of our application
    */
 function _render_page($view, $data=null, $render=false)
     {
