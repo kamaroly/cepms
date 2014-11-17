@@ -373,8 +373,9 @@ class Loans extends MX_Controller{
            //is this a second loan
            if ($this->loans->secondLoan($this->input->post('loan_id'))) {
               
+              $loanId = $this->input->post('loan_id');
               //get the data for the previous loan that was transfered to this 
-              $transferedLoanId =$this->loans->getByColumn('transfered',$this->input->post('loan_id'))[0]->id;
+              $transferedLoanId =$this->loans->getByColumn('transfered', $loanId)[0]->id;
               
               //Get outstanding money for the transfered loan
               $transferedLoanOutstanding =$this->loans->getLoanBalance($transferedLoanId);
@@ -384,6 +385,30 @@ class Loans extends MX_Controller{
       
               //Balance previous loan
               $this->balanceLoan($memberid,$transferedLoanId,$transferedLoanOutstanding);
+              //Unset loan transfer
+              $this->loans->unSetTransfered($transferedLoanId);
+
+              /////////////////////////
+              //updating second loan //
+              /////////////////////////
+               $loanObject = $this->loans->getByColumn('id', $loanId)[0]; //Loan object to update
+               
+               $this->update($loanObject,$transferedLoanOutstanding); //Update the loan
+
+
+               //////////////////////////////////////////
+               //let's balance the second balance too  //
+               //////////////////////////////////////////
+                //Get outstanding money for the transfered loan
+              $Outstanding =$this->loans->getLoanBalance($loanId);
+              
+              //Balance previous loan
+              $this->balanceLoan($memberid,$loanId,$Outstanding);
+             
+              $this->session->set_flashdata('message', "Loan full paid and transfered loan well balanced");
+
+               redirect('loans','refresh');
+               return ;
            }
        }
         
@@ -432,13 +457,33 @@ class Loans extends MX_Controller{
                     'balance'     =>0,
                     'created_by'  =>$this->user_id
                     );
+   return $this->loanpayments->insert($insert_array);
    }
 
-   public function test($loanId=1)
+  /**
+   * update loan 
+   */
+  private function update($loanDetails,$balanceAmount)
    {
-     $this->balanceLoan(1,1,543338);
-     var_dump($this->loans->getLoanBalance($loanId));
+       
+  $total_loan_interest = $loanDetails->total_loan_interest - $balanceAmount;
+  $approved_amount     = $total_loan_interest/(1+($loanDetails->interest_rate/100));
+  $monthly_payment_fees = $total_loan_interest/$loanDetails->installment;
+
+  $insert_array=array(
+                      'approved_amount' =>$approved_amount,
+                      'total_loan_interest'=>$total_loan_interest,
+                      'monthly_payment_fees'=> $monthly_payment_fees,
+                      'second' =>FALSE,
+                      'description'=>"System adjusted loan Automatically because , it had some transfere money"
+                      
+                    );
+
+
+   return $this->loans->update($loanDetails->id,$insert_array);
    }
+
+
    /**
    * @author Kamaro Lambert
    * @method to render the page to the mail template of our application

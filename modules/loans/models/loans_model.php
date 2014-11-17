@@ -309,7 +309,7 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
     
     //Change loan to non transfered
     return $this->db->update($this->_table, 
-                            array('transfered'=>FALSE),
+                            array('transfered'=>0),
                             array('id' => $loanid)
                             );
   }
