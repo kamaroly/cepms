@@ -181,6 +181,7 @@ $this->db->where('transfered',0);
 
      return ($memberloan-$loanpayments);
   }
+  
 
   /**
   *@author Kamaro Lambert
@@ -261,6 +262,8 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
                    ->$columnName;
   }
 
+
+
   /**
    * @brief exists
    * @details check if the row exists based on the 
@@ -273,16 +276,27 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
                      ->get($this->_table)
                      ->num_rows();
   }
-
+  
+  /**
+   * @brief getByColumn
+   * @details get loan by column specified
+   * @return [description]
+   */
+  public function getByColumn($field,$value)
+   {
+     return $this->db->where($field,$value)
+                     ->get($this->_table)
+                     ->result();
+   } 
   /**
    * set loan to transfered
    */
-  public function setTransfered($loanid,$memberid=false){
+  public function setTransfered($loanid,$toloanid){
 
     //Update loan in the database
     return $this->db->update($this->_table, 
-                            array('transfered'=>TRUE,
-                                'description' => 'Loan Transfered to loan ID # '.$this->getLastLoanId($memberid)), 
+                            array('transfered'  =>$toloanid,
+                                  'description' => 'Loan Transfered to loan ID # '.$toloanid), 
                             array('id' => $loanid)
                             );
     
@@ -333,7 +347,7 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
   }
 
 
-    /**
+  /**
    * get latest loan ID
    * @return integer loan id.
    */
@@ -350,5 +364,43 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
                     ->get($this->_table)
                     ->result()[0]
                     ->id;
+  }
+
+  /**
+   * check if this loan is second(has some transfers) or not
+   * @return  boolean;
+   */
+  public function secondLoan($loanid)
+  {
+   return (boolean) $this->db->select('second')
+                             ->where('id',$loanid)
+                             ->get($this->_table)
+                             ->result()[0]
+                             ->second;
+  }
+
+
+  /**
+   * Get paid amount per loan
+   */
+  public function getPaidPerLoan($loanid)
+  {
+    return  $this->db->select_sum('paid_amount')
+                     ->where('loan_id',$loanid)
+                     ->get($this->_loan_payments_table)
+                     ->result()[0]
+                     ->paid_amount;
+                     
+  }
+
+  public function getLoanBalance($loanid)
+  {
+     //get total approved amount for this loan
+     $totalLoan = $this->getByColumn('id',$loanid)[0]->total_loan_interest;
+
+     //Get loan paid amount 
+     $paidAmount = $this->getPaidPerLoan($loanid);
+
+     return $totalLoan-$paidAmount;
   }
 }

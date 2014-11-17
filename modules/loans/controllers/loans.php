@@ -270,11 +270,11 @@ class Loans extends MX_Controller{
     
    if ($loanId=$insert) {
 
-     //Second created let's mark the previoius loan ID
+     //get previous loan
      $previousLoanId = $this->loans->getPreviousLoanId($this->input->post('member_id'));
      
      //Mark previous loan as transfered
-     $this->loans->setTransfered($previousLoanId,$this->input->post('member_id'));
+     $this->loans->setTransfered($previousLoanId,$loanId);
 
      $this->session->set_flashdata('message', "Loan  well Given!");
      
@@ -360,10 +360,32 @@ class Loans extends MX_Controller{
         $total_loan_interest=$this->input->post('total_loan_interest');
         #calculate the balance
         $balance = $total_loan_interest-$loanpaymentssum;
-/**
- * @todo  if it's the last payment and this loan has been transfered , you have to mark the previous loan as trasnfered
- * * then update and close the second one.
- */
+
+        // check if if balance is less or equal to 0
+        // if it's the case then check if this loan has some transfers from previous loan       
+        // if this loan was the second transfered then balance the previous loan and update the details for the current
+        // close the loans
+       
+       //is it final payment
+       if ($balance<=0) {
+           //this is the last payment
+           
+           //is this a second loan
+           if ($this->loans->secondLoan($this->input->post('loan_id'))) {
+              
+              //get the data for the previous loan that was transfered to this 
+              $transferedLoanId =$this->loans->getByColumn('transfered',$this->input->post('loan_id'))[0]->id;
+              
+              //Get outstanding money for the transfered loan
+              $transferedLoanOutstanding =$this->loans->getLoanBalance($transferedLoanId);
+              
+              //prepare data
+              $memberid = $this->input->post('member_id');
+      
+              //Balance previous loan
+              $this->balanceLoan($memberid,$transferedLoanId,$transferedLoanOutstanding);
+           }
+       }
         
         $insert_array=array(
                     'member_id'   =>$this->input->post('member_id'),
@@ -394,9 +416,28 @@ class Loans extends MX_Controller{
     }
 
 
-   public function test()
+   /**
+    * balance a loan
+    */
+   private function balanceLoan($memberid,$loanId,$balanceAmount)
    {
-     $this->load->view('reports/prints/contracts');
+       
+  $insert_array=array(
+                    'member_id'   =>$memberid,
+                    'loan_id'     =>$loanId,
+                    'date_paid'   =>date('Y-m-d'),
+                    'paid_amount' =>$balanceAmount, 
+                    'description' =>"Automatically balanced because as it was transfered to another loan",
+                    'type_of_payment' =>"System paid",
+                    'balance'     =>0,
+                    'created_by'  =>$this->user_id
+                    );
+   }
+
+   public function test($loanId=1)
+   {
+     $this->balanceLoan(1,1,543338);
+     var_dump($this->loans->getLoanBalance($loanId));
    }
    /**
    * @author Kamaro Lambert
