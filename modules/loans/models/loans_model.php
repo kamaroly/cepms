@@ -8,11 +8,7 @@ class Loans_model extends MY_Model{
 
 
 
-	 //Get all journals in the db
-     
 
-    
-//Get all journals in the db
 public function all($limit=20,$offset=0,$loanid=FALSE,$field=null,$value=null)
 {
 
