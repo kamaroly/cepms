@@ -121,7 +121,7 @@ public function getTransferedLoan($startdate,$enddate,$id=false)
                         ON a.member_id=c.id 
                         WHERE (a.created_at BETWEEN '$startdate' AND '$enddate')
                          and balance<>0
-                         and transfered=1
+                         and transfered>0
                         $condition
                         order by  a.member_id asc");
    

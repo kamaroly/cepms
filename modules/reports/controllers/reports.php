@@ -341,20 +341,15 @@ public function transferedLoan($id=false)
 
         
         #getting submited values
-        $start_date = $this->input->post('start_date').'-01';
-        $end_date   = $this->input->post('end_date').'-01';
+        $start_date = $this->input->post('start_date');
+        $end_date   = $this->input->post('end_date');
         
-
-    if ($this->input->post('membersids')) {
-            # use has submited the ids of the members who needs to be checked up while reports
-         $id=implode(',', $this->input->post('membersids'));
-    }
 
         #load models
         $this->load->model('Loansnotyetpaid_model','loansnotyetpaid');
         
         #getting the data
-        $this->data['loansnotyetpaid'] = $this->loansnotyetpaid->getTransferedLoan($start_date,$end_date,$id);
+        $this->data['loansnotyetpaid'] = $this->loansnotyetpaid->getTransferedLoan($start_date,$end_date);
 
         $this->data['body']=$this->load->view('reports/loans/transferedLoan',$this->data,TRUE);
 
