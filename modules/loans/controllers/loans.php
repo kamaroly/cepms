@@ -146,7 +146,12 @@ class Loans extends MX_Controller{
 
         return ;
       }
+      
+     $latestLoanId =  $this->loans->getPreviousLoanId($memberid);
     
+      if($latestLoanId){
+        $this->data['loanDetails'] = $this->loans->getByColumn("id",$latestLoanId);
+      }
       //trying to show the loan of the user
       if(empty($_POST) && $memberid!=FALSE)
       {
@@ -158,6 +163,9 @@ class Loans extends MX_Controller{
           $this->session->set_flashdata('errors','<h4>The person you are trying to give loan does not exist!</h4>');
           redirect('loans','refresh');
         }
+          //lastest loan id
+
+        
 
         $this->data['member']     = $this->members->get($memberid); //get lember details
         $this->data['contractid'] = $this->Loans->getMaxid()+1; //get the id of the next loan
@@ -185,7 +193,7 @@ class Loans extends MX_Controller{
     
     //get member details 
     $member = $this->members->get($memberid); 
-  
+
     //Get Maximum allowed top up 
     $maxtopup=($this->config->item(str_replace(' ', '_', $member->level.'_topup'))*12)-(($this->config->item(str_replace(' ', '_', $member->level.'_topup'))*12)*0.18);
 
@@ -234,6 +242,7 @@ class Loans extends MX_Controller{
    
    //Does he/she have an active loan
    $secondLoan = FALSE;
+   $interest_rate = $this->input->post('interest_rate');
    $approved_amount=$this->input->post('approved_amount');
 
    if ($this->loans->GetOustandingPayment($this->user_id,TRUE)) {
@@ -243,6 +252,12 @@ class Loans extends MX_Controller{
      $outstanding=$this->loans->GetOustandingPayment($this->user_id,TRUE);
      //add outstanding to the gotten loan
      $approved_amount +=  $outstanding;
+
+      //get previous loan
+     $previousLoanId = $this->loans->getPreviousLoanId($this->input->post('member_id'));
+      //set the previous loan interest rate
+      
+     $interest_rate=$this->loans->getByColumn('id',$previousLoanId)->interest_rate;
    }
    //prepare the data for the new loan
    
@@ -250,7 +265,7 @@ class Loans extends MX_Controller{
                       'member_id'=>$this->input->post('member_id'),
                       'letter_date'=>$this->input->post('letter_date'),
                       'loan_contract_number'=>$this->input->post('loan_contract_number'),
-                      'interest_rate'   =>$this->input->post('interest_rate'),
+                      'interest_rate'   =>$interest_rate,
                       'wished_amount'   =>$this->input->post('wished_amount'),
                       'approved_amount' =>$approved_amount,
                       'interest'        =>str_replace(',','', $this->input->post('interest')),
@@ -269,13 +284,13 @@ class Loans extends MX_Controller{
     $insert=$this->Loans->insert($insert_array);
     
    if ($loanId=$insert) {
-
-     //get previous loan
-     $previousLoanId = $this->loans->getPreviousLoanId($this->input->post('member_id'));
      
      //Mark previous loan as transfered
-     $this->loans->setTransfered($previousLoanId,$loanId);
-
+     if ($secondLoan) {
+         
+        $this->loans->setTransfered($previousLoanId,$loanId);
+     }
+    
      $this->session->set_flashdata('message', "Loan  well Given!");
      
     //Prepare data to show on the contract
@@ -285,7 +300,7 @@ class Loans extends MX_Controller{
                       'last_name'=>$member->last_name,
                       'letter_date'=>$this->input->post('letter_date'),
                       'loan_contract_number'=>$this->input->post('loan_contract_number'),
-                      'interest_rate'   =>$this->input->post('interest_rate'),
+                      'interest_rate'   =>$interest_rate,
                       'wished_amount'   =>$this->input->post('wished_amount'),
                       'approved_amount' =>$this->input->post('approved_amount'),
                       'interest'        =>$this->input->post('interest'),

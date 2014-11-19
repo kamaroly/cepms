@@ -1,7 +1,7 @@
 <div class="main-inner">
     <div class="container">
    <!--Notification area -->
-      
+
 <div class="widget" ng-app>
               
               <div class="widget-header">
@@ -22,6 +22,12 @@
 <label class="label label-inverse span3"><H3>OUTSTANDING :<u><?php echo number_format($outstanding=($this->Loans->GetOustandingPayment($member->id,TRUE)<0)?0:$this->Loans->GetOustandingPayment($member->id,TRUE)); ?></u> </H3></label>
 <label class="label label-success span3"><H3>RECEIVABLE  :<u><?php echo number_format($topup-$outstanding); ?></u></H3></label>
 <label class="label label-warning span3"><H3>PAYABLE     :<u><?php echo number_format($this->config->item(str_replace(' ', '_', $member->level.'_topup'))*12); ?></u></H3></label>
+
+  <?php $interest_rate = $this->config->item('interest_rate');?>
+  <?php if ($outstanding) {
+    $interest_rate  = $loanDetails->interest_rate;
+  } ?>
+
 </legend>
 
                   <input type="hidden" name="member_id" value="<?php echo $member->id; ?>" />
@@ -80,7 +86,8 @@
                 <div class="control-group span4">                     
                       <label class="control-label" for="interest_rate">Interest Rate:  </label>
                       <div class="controls">
-                        <input type="number" name="interest_rate" ng-model="interest_rate" ng-init="interest_rate =<?php echo $this->config->item('interest_rate'); ?>" readonly/>
+                    
+                        <input type="number" name="interest_rate" ng-model="interest_rate" ng-init="interest_rate =<?php echo $interest_rate; ?>" readonly/>
                       </div>
                 </div>
                
@@ -88,7 +95,7 @@
                                 <div class="control-group span4">                     
                       <label class="control-label" for="wished_amount">Wished amount:   </label>
                       <div class="controls">
-                        <input type="number" name="wished_amount" readonly value=" <?php echo intval(($this->Loans->eligibleforloan($member->id)*12)/(1+($this->config->item('interest_rate')/100))); ?> " />
+                        <input type="number" name="wished_amount" readonly value=" <?php echo intval(($this->Loans->eligibleforloan($member->id)*12)/(1+($interest_rate/100))); ?> " />
                       </div>
                 </div>
                 

@@ -334,12 +334,16 @@ WHERE b.member_id = '$memberid') as foo WHERE balance >0");
       return false;
     }
 
-    return $this->db->order_by("id", "desc")
+     $data= $this->db->order_by("id", "desc")
                     ->select('id')
                     ->where('member_id',$memberid)
                     ->get($this->_table)
-                    ->result()[1]
-                    ->id;
+                    ->result();
+    if(isset($data[1])){
+      return $data[1]->id;
+    }
+
+    return false;
   }
 
 
