@@ -27,6 +27,7 @@
   <?php if ($outstanding) {
     $interest_rate  = $loanDetails->interest_rate;
   } ?>
+  
 
 </legend>
 
